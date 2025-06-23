@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recipe Details - Flavor Table</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🍲 Flavor Table</h1>
+    <nav>
+      <a href="/">Search Recipes</a>
+      <a href="/random">Random Recipe</a>
+      <a href="/favorites">Favorites</a>
+    </nav>
+  </header>
+
+  <main>
+  <div class="recipe-card" style="max-width: 600px; margin: auto;">
+    <h2 id="recipe-title">Loading...</h2>
+    <img id="recipe-image" src="" alt="Recipe Image" style="width:100%; border-radius:10px;">
+
+    <section id="recipe-info">
+      <p><strong>Summary:</strong> <span id="recipe-summary">No summary available.</span></p>
+      <p><strong>Cooking Time:</strong> <span id="recipe-cooking-time">-</span> minutes</p>
+      
+      <h3>Instructions:</h3>
+      <p id="recipe-instructions">No instructions available.</p>
+      
+      <h3>Ingredients:</h3>
+      <ul id="recipe-ingredients"></ul>
+    </section>
+  </div>
+
+  <a href="/">Back to Home</a>
+</main>
+
+  <script src="app.js"></script>
+</body>
+</html>
