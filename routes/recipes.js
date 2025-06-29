@@ -1,4 +1,3 @@
-// routes/recipes.js
 
 const express = require('express');
 const axios = require('axios');
@@ -6,14 +5,14 @@ const { pool } = require('../server');
 const router = express.Router();
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 
-// Fetch random recipe from Spoonacular
+
 router.get('/random', async (req, res) => {
   try {
     const url = `https://api.spoonacular.com/recipes/random?number=1&apiKey=${SPOONACULAR_API_KEY}`;
     const response = await axios.get(url);
     const recipe = response.data.recipes[0];
 
-    // Insert into database
+
     await pool.query(
       `INSERT INTO recipes (title, image, instructions, ingredients, readyin)
        VALUES ($1, $2, $3, $4, $5)`,
@@ -40,7 +39,6 @@ router.get('/random', async (req, res) => {
   }
 });
 
-// Search recipes by ingredients
 router.get('/search', async (req, res) => {
   const { ingredients } = req.query;
   if (!ingredients) return res.status(400).json({ error: 'Missing ingredients' });
@@ -65,7 +63,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
-// Get recipe details by ID
+
 router.get('/recipe/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -74,7 +72,7 @@ router.get('/recipe/:id', async (req, res) => {
     const response = await axios.get(url);
     const recipe = response.data;
 
-    // Save to DB
+
     await pool.query(
       `INSERT INTO recipes (title, image, instructions, ingredients, readyin)
        VALUES ($1, $2, $3, $4, $5)`,

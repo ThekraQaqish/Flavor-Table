@@ -1,4 +1,3 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const pg = require('pg');
@@ -22,7 +21,7 @@ app.use('/', homeRouter);
 app.use('/recipes', recipesRouter);
 app.use('/favorites', favoritesRouter);
 
-// التأكد من الاتصال بالداتا وإطلاق السيرفر
+
 pool.connect()
   .then(client => {
     return client.query('SELECT current_database(), current_user')

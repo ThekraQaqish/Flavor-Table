@@ -1,10 +1,10 @@
-// routes/favorites.js
+
 
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../server');
 
-// Get all favorites
+
 router.get('/api', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM favorites');
@@ -15,7 +15,7 @@ router.get('/api', async (req, res) => {
   }
 });
 
-// Save a favorite
+
 router.post('/', async (req, res) => {
   const { title, image } = req.body;
 
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Delete a favorite
+
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -60,7 +60,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Update a favorite
+
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { title, image } = req.body;
