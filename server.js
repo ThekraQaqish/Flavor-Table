@@ -1,21 +1,41 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const recipesRouter = require('./routes/recipes');
-const homeRouter = require('./routes/home');
-
+const pg = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
 app.use(express.static('public'));
+app.use(express.json());
 
-app.use('/recipes', recipesRouter);
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+module.exports = { pool };
+
+const homeRouter = require('./routes/home');
+const recipesRouter = require('./routes/recipes');
+const favoritesRouter = require('./routes/favorites');
+
 app.use('/', homeRouter);
-
-
 app.use('/recipes', recipesRouter);
+app.use('/favorites', favoritesRouter);
+
+
+pool.connect()
+  .then(client => {
+    return client.query('SELECT current_database(), current_user')
+      .then(res => {
+        client.release();
+        const dbName = res.rows[0].current_database;
+        const dbUser = res.rows[0].current_user;
+        console.log(`Connected to ${dbName} as user ${dbUser}`);
+      });
+  })
+  .catch(err => {
+    console.error('Error connecting to the database:', err);
+  });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

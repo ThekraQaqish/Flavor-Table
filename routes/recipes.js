@@ -1,75 +1,102 @@
 
 const express = require('express');
 const axios = require('axios');
+const { pool } = require('../server');
 const router = express.Router();
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 
 
 router.get('/random', async (req, res) => {
-    try {
-        const response = await axios.get(
-            `https://api.spoonacular.com/recipes/random?number=1&apiKey=${SPOONACULAR_API_KEY}`
-        );
-        const recipe = response.data.recipes[0];
-        res.json({
-            title: recipe.title,
-            image: recipe.image,
-            instructions: recipe.instructions,
-            ingredients: recipe.extendedIngredients.map(i => i.name),
-        });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch random recipe' });
-    }
+  try {
+    const url = `https://api.spoonacular.com/recipes/random?number=1&apiKey=${SPOONACULAR_API_KEY}`;
+    const response = await axios.get(url);
+    const recipe = response.data.recipes[0];
+
+
+    await pool.query(
+      `INSERT INTO recipes (title, image, instructions, ingredients, readyin)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        recipe.title,
+        recipe.image,
+        recipe.instructions || null,
+        JSON.stringify(recipe.extendedIngredients.map(i => i.name)),
+        recipe.readyInMinutes
+      ]
+    );
+
+    res.json({
+      title: recipe.title,
+      image: recipe.image,
+      instructions: recipe.instructions,
+      ingredients: recipe.extendedIngredients.map(i => i.name),
+      readyInMinutes: recipe.readyInMinutes
+    });
+
+  } catch (err) {
+    console.error('Error fetching random recipe:', err.message);
+    res.status(500).json({ error: 'Failed to fetch random recipe' });
+  }
 });
 
-
 router.get('/search', async (req, res) => {
-    const { ingredients } = req.query;
-    if (!ingredients) return res.status(400).json({ error: 'Missing ingredients' });
+  const { ingredients } = req.query;
+  if (!ingredients) return res.status(400).json({ error: 'Missing ingredients' });
 
-    try {
-        const response = await axios.get(
-            `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&apiKey=${SPOONACULAR_API_KEY}`
-        );
+  try {
+    const url = `https://api.spoonacular.com/recipes/findByIngredients?ingredients=${encodeURIComponent(ingredients)}&apiKey=${SPOONACULAR_API_KEY}`;
+    const response = await axios.get(url);
 
-        const simplified = response.data.map(r => ({
-            id: r.id,
-            title: r.title,
-            image: r.image,
-            usedIngredients: r.usedIngredients.map(i => i.name),
-            missedIngredients: r.missedIngredients.map(i => i.name)
-        }));
+    const simplified = response.data.map(r => ({
+      id: r.id,
+      title: r.title,
+      image: r.image,
+      usedIngredients: r.usedIngredients.map(i => i.name),
+      missedIngredients: r.missedIngredients.map(i => i.name)
+    }));
 
-        res.json(simplified);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to search for recipes' });
-    }
+    res.json(simplified);
+
+  } catch (err) {
+    console.error('Error searching recipes:', err.message);
+    res.status(500).json({ error: 'Failed to search for recipes' });
+  }
 });
 
 
 router.get('/recipe/:id', async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const response = await axios.get(
-            `https://api.spoonacular.com/recipes/${id}/information?apiKey=${SPOONACULAR_API_KEY}`
-        );
+  try {
+    const url = `https://api.spoonacular.com/recipes/${id}/information?apiKey=${SPOONACULAR_API_KEY}`;
+    const response = await axios.get(url);
+    const recipe = response.data;
 
-        const recipe = response.data;
 
-        res.json({
-            title: recipe.title,
-            image: recipe.image,
-            summary: recipe.summary,
-            readyInMinutes: recipe.readyInMinutes,
-            instructions: recipe.instructions,
-            ingredients: recipe.extendedIngredients.map(i => i.original)
-        });
+    await pool.query(
+      `INSERT INTO recipes (title, image, instructions, ingredients, readyin)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [
+        recipe.title,
+        recipe.image,
+        recipe.instructions || null,
+        JSON.stringify(recipe.extendedIngredients.map(i => i.original)),
+        recipe.readyInMinutes
+      ]
+    );
 
-    } catch (error) {
-        console.error('Error fetching recipe details:', error.message);
-        res.status(500).json({ error: 'Failed to fetch recipe details' });
-    }
+    res.json({
+      title: recipe.title,
+      image: recipe.image,
+      instructions: recipe.instructions,
+      ingredients: recipe.extendedIngredients.map(i => i.original),
+      readyInMinutes: recipe.readyInMinutes
+    });
+
+  } catch (err) {
+    console.error('Error fetching recipe details:', err.message);
+    res.status(500).json({ error: 'Failed to fetch recipe details' });
+  }
 });
 
 module.exports = router;
