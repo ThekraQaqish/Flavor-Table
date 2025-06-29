@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>   
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -17,8 +17,21 @@
   <main>
     <h1>❤️ My Favorite Recipes</h1>
     <div id="favorites-list"></div>
+    <form id="updateForm" style="display:none;">
+      <h3>تعديل وصفة</h3>
+      <input type="text" id="update-title" placeholder="العنوان">
+      <input type="text" id="update-image" placeholder="رابط الصورة">
+      <input type="hidden" id="update-id">
+      <button type="submit">حفظ التعديلات</button>
+    </form>
     <a href="/">Back to Home</a>
   </main>
   <script src="app.js"></script>
+  <script>
+  window.onload = () => {
+  displayFavorites();
+  setupUpdateForm();
+  };
+</script>
 </body>
 </html>
