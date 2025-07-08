@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flavor Table</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+    <header>
+    <h1>🍲 Flavor Table</h1>
+    <nav>
+      <a href="/recipes/search">Search Recipes</a> |
+      <a href="/recipes/random">Random Recipe</a> |
+      <a href="/recipes/favorites">Favorites</a>
+    </nav>
+  </header>
+  <main>
+    <h1>❤️ My Favorite Recipes</h1>
+    <div id="favorites-list"></div>
+      <form id="updateForm">
+        <label for="title">Title</label><br />
+        <textarea id="title" rows="4" cols="40"> </textarea><br /><br />
+        <img id="currentImage" src="" style="width:100px;">
+        <label for="imageInput">Image URL:</label><br />
+        <input type="text" id="imageInput"><br /><br />
+
+        
+        <label for="ingredients">ingredients:</label><br />
+        <textarea id="ingredients" rows="4" cols="40"></textarea><br /><br />
+        
+        <label for="instructions">instructions</label><br />
+        <textarea id="instructions" rows="6" cols="40"> </textarea><br /><br />
+        
+        <button type="button" onclick="updateRecipe(window.currentUpdateId)">Update Recipe</button>
+      </form>
+    <a href="/">Back to Home</a>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script src="/app.js"></script>
+</body>
+</html>

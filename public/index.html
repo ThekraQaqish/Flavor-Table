@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flavor Table</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header>
+    <h1>🍲 Flavor Table</h1>
+    <nav>
+      <a href="/recipes/search">Search Recipes</a> |
+      <a href="/recipes/random">Random Recipe</a> |
+      <a href="/recipes/favorites">Favorites</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Find Recipes by Ingredients</h2>
+    <input type="text" id="searchInput" placeholder="e.g., chicken, tomato, rice" />
+    <button onclick="search()" id='searchButton' >Search</button>
+    <div id="recipeContainer"></div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script src="/app.js"></script>
+</body>
+</html>
